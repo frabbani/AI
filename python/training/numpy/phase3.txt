@@ -1,0 +1,59 @@
+Phase 3 – Linear Algebra Mastery (Week 3–4)
+
+Goal: Become fluent in high-performance matrix math.
+
+----- Setup -----
+A = random (5,5) matrix
+B = random integer (5,5) matrix
+v = random (5,) vector
+X = random (8,3) matrix
+y = random (8,) vector
+M = random (6,6) matrix
+
+1) Matrix operations
+- Compute dot product of A and B using np.dot and @
+- Compute matrix-vector product of A and v
+- Compute L2 norm of v and angle (in radians) between v and another random vector w
+
+2) Decompositions
+- SVD of A: U, S, Vt = np.linalg.svd(A)
+- Eigenvalues and eigenvectors of M
+
+3) Solving Linear Systems
+- Solve Ax = v for x (assume A is invertible)
+- Compute inverse and pseudo-inverse of A
+
+4) Orthogonalization
+- QR decomposition of X
+- Use QR to solve least-squares: X @ theta ≈ y
+
+5) Mini-project: Linear Regression
+- Implement Linear Regression using the Normal Equation:
+  θ = (X.T @ X)^-1 @ X.T @ y
+- Validate your solution vs. np.linalg.lstsq
+
+Short Quiz (10)
+
+1. What does np.dot(A, B) compute if A and B are both 2D arrays?
+2. Which function computes the L2 norm of a vector?
+3. What does np.linalg.svd return?
+4. How do you solve Ax = b for x in NumPy?
+5. What is the difference between np.linalg.inv and np.linalg.pinv?
+6. What does QR decomposition provide?
+7. In the normal equation for linear regression, what does (X.T @ X) need to be for the inverse to exist?
+8. Which function returns both eigenvalues and eigenvectors?
+9. What is the geometric meaning of the dot product between two vectors?
+10. Why might you prefer the pseudo-inverse over the inverse in regression?
+
+Answer Key
+
+1. Matrix multiplication.
+2. np.linalg.norm.
+3. U, S, Vt (singular vectors and singular values).
+4. np.linalg.solve(A, b).
+5. inv is the true inverse (if exists), pinv is the Moore-Penrose pseudo-inverse (always exists).
+6. Orthogonal (Q) and upper-triangular (R) matrices.
+7. It must be invertible (full rank).
+8. np.linalg.eig.
+9. Measures similarity and projection; relates to the angle between vectors.
+10. pinv works even if X.T @ X is not invertible (singular or ill-conditioned).

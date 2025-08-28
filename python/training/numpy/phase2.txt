@@ -1,0 +1,137 @@
+import numpy as np
+rs = np.random.default_rng(0)
+
+# ----- Setup -----
+A = rs.integers(1, 10, size=(4, 4))
+B = rs.standard_normal((4, 4))
+v = rs.integers(1, 5, size=(4,))        # shape (4,)
+x = rs.standard_normal((3, 1))          # shape (3,1)
+y = rs.standard_normal((1, 4))          # shape (1,4)
+W = rs.standard_normal((6, 50))         # 6 "word" embeddings, dim=50
+
+# 1) Vectorized operations -----------------------------------------------------
+# a) Elementwise: double A, sqrt of |B|, and affine transform 3*B - 2
+# TODO: A2, Bsqrt, Baffine
+A2 = ...
+Bsqrt = ...
+Baffine = ...
+
+# b) Scalar vs elementwise: scale row-wise and col-wise using broadcasting
+# Scale rows by v (shape (4,)) and columns by v[:,None]
+# TODO: rowscaled, colscaled
+rowscaled = ...
+colscaled = ...
+
+# 2) Universal functions (ufuncs) ---------------------------------------------
+# a) Use np.add, np.multiply to compute A + B and A * B without operators
+# TODO: addAB, mulAB
+addAB = ...
+mulAB = ...
+
+# b) Stable log(1+exp(z)) using ufuncs only (no loops, no conditionals)
+# z is B; use np.log1p and np.exp
+# TODO: softplusB
+softplusB = ...
+
+# 3) Broadcasting rules --------------------------------------------------------
+# a) Practice (3,1) + (1,4) -> (3,4)
+# TODO: xy_sum
+xy_sum = ...
+
+# b) Given v shape (4,), make it (1,4) and (4,1) without copy using view
+# TODO: v_row, v_col
+v_row = ...
+v_col = ...
+
+# c) Use v_col and v_row to build an outer-sum matrix of shape (4,4)
+# TODO: outer_sum
+outer_sum = ...
+
+# 4) Advanced ops --------------------------------------------------------------
+# a) np.where: replace negative B with 0, keep positive as-is
+# TODO: Bpos
+Bpos = ...
+
+# b) np.clip: clip B to [-1, 1]
+# TODO: Bclip
+Bclip = ...
+
+# c) np.tile / np.repeat: 
+# - Tile v to a (4,4) matrix by repeating across rows
+# - Repeat each element of v 3 times -> shape (12,)
+# TODO: Vtile, Vrep
+Vtile = ...
+Vrep = ...
+
+# 5) Pairwise distances (broadcasting; no loops) -------------------------------
+# For M in R^{nxd}, compute squared Euclidean distance matrix D in R^{n x n}
+# Hint: ||a-b||^2 = ||a||^2 + ||b||^2 - 2 a·b
+M = rs.standard_normal((8, 5))
+# TODO: D (shape (8,8)), all diagonal ~ 0 (numerical eps OK)
+# Use only dot/broadcasting; no explicit loops.
+D = ...
+
+# 6) Mini-project: cosine similarity (no loops) --------------------------------
+# Given W in R^{m x d}, return S = cosine_similarity(W) in R^{m x m}
+# S_ij = (Wi·Wj) / (||Wi|| * ||Wj||)
+def cosine_similarity(X: np.ndarray) -> np.ndarray:
+    # TODO:
+    # 1) Compute dot matrix G = X @ X.T
+    # 2) Row norms n (shape (m,)), then nnT via outer product
+    # 3) Divide with broadcasting; guard division by zero with np.maximum
+    ...
+
+S = cosine_similarity(W)
+# Basic checks
+assert S.shape == (W.shape[0], W.shape[0])
+assert np.allclose(np.diag(S), 1, atol=1e-6)  # self-similarity ~ 1
+print("All tasks ran. Shapes:",
+      dict(A2=A2.shape, Bsqrt=Bsqrt.shape, xy_sum=xy_sum.shape, D=D.shape, S=S.shape))
+
+Short Quiz
+
+Short Quiz (10)
+
+Broadcasting: result shape of (3,1) + (1,4)?
+
+Does np.sqrt modify the input in-place?
+
+Choose the ufuncs: np.add, np.dot, np.clip, np.sin.
+
+Given a.shape == (5,) and b.shape == (5,1), is a + b valid? If yes, shape?
+
+Best vectorized way to replace negatives in X with 0: (a) loop; (b) X[X<0]=0; (c) np.maximum(X,0) returning new array.
+
+Compute stable log(1+exp(z)) with ufuncs: which two functions are ideal?
+
+For pairwise squared distances using broadcasting, which identity is used?
+
+np.tile(v, (4,1)) vs np.repeat(v, 4): which keeps 2D shape?
+
+In cosine similarity, why normalize rows by their L2 norms?
+
+If a row in X is all zeros, what should its cosine similarity row contain against others?
+
+
+
+Answer Key
+
+(3,4)
+
+No (it returns a new array).
+
+Ufuncs: np.add, np.clip, np.sin (not np.dot).
+
+Yes → (5,5).
+
+(c) for pure functional return (or (b) if in-place allowed).
+
+np.log1p and np.exp.
+
+||a-b||^2 = ||a||^2 + ||b||^2 - 2 a·b.
+
+np.tile(v, (4,1)).
+
+To scale dot products to [-1,1] by removing magnitude; compares directions only.
+
+All zeros (or NaNs) — treat by guarding norm with ε so similarities become 0.
